@@ -1,0 +1,400 @@
+{
+  "version": 1,
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@schematics/angular": {
+      "component": {
+        "changeDetection": "OnPush"
+      }
+    },
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss",
+      "changeDetection": "OnPush"
+    }
+  },
+  "defaultProject": "leaderboard-frontend",
+  "projects": {
+    "leaderboard-frontend": {
+      "projectType": "application",
+      "root": "apps/leaderboard-frontend",
+      "sourceRoot": "apps/leaderboard-frontend/src",
+      "prefix": "leaderboard-app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/leaderboard-frontend",
+            "index": "apps/leaderboard-frontend/src/index.html",
+            "main": "apps/leaderboard-frontend/src/main.ts",
+            "polyfills": "apps/leaderboard-frontend/src/polyfills.ts",
+            "tsConfig": "apps/leaderboard-frontend/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/leaderboard-frontend/src/favicon.ico",
+              "apps/leaderboard-frontend/src/assets"
+            ],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/bootstrap/scss/bootstrap.scss",
+              "apps/leaderboard-frontend/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "libs/shared/environments/src/lib/environment.ts",
+                  "with": "libs/shared/environments/src/lib/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "leaderboard-frontend:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "leaderboard-frontend:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "leaderboard-frontend:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/leaderboard-frontend/src/**/*.ts",
+              "apps/leaderboard-frontend/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/leaderboard-frontend"],
+          "options": {
+            "jestConfig": "apps/leaderboard-frontend/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "leaderboard-frontend-e2e": {
+      "root": "apps/leaderboard-frontend-e2e",
+      "sourceRoot": "apps/leaderboard-frontend-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/leaderboard-frontend-e2e/cypress.json",
+            "tsConfig": "apps/leaderboard-frontend-e2e/tsconfig.e2e.json",
+            "devServerTarget": "leaderboard-frontend:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "leaderboard-frontend:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/leaderboard-frontend-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "leaderboard-api": {
+      "root": "apps/leaderboard-api",
+      "sourceRoot": "apps/leaderboard-api/src",
+      "projectType": "application",
+      "prefix": "api",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/leaderboard-api",
+            "main": "apps/leaderboard-api/src/main.ts",
+            "tsConfig": "apps/leaderboard-api/tsconfig.app.json",
+            "assets": ["apps/leaderboard-api/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "libs/shared/environments/src/lib/environment.ts",
+                  "with": "libs/shared/environments/src/lib/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "generate-swagger": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "tsoa spec"
+              }
+            ],
+            "cwd": "apps/leaderboard-api"
+          }
+        },
+        "swagger-dev": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "nodemon -x tsoa spec"
+              }
+            ],
+            "cwd": "apps/leaderboard-api"
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "leaderboard-api:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/leaderboard-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/leaderboard-api"],
+          "options": {
+            "jestConfig": "apps/leaderboard-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "shared-data-access": {
+      "projectType": "library",
+      "root": "libs/shared/data-access",
+      "sourceRoot": "libs/shared/data-access/src",
+      "prefix": "leaderboard-app",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/data-access/src/**/*.ts",
+              "libs/shared/data-access/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/data-access"],
+          "options": {
+            "jestConfig": "libs/shared/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "shared-models": {
+      "root": "libs/shared/models",
+      "sourceRoot": "libs/shared/models/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/shared/models/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/models"],
+          "options": {
+            "jestConfig": "libs/shared/models/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "shared-ui": {
+      "projectType": "library",
+      "root": "libs/shared/ui",
+      "sourceRoot": "libs/shared/ui/src",
+      "prefix": "leaderboard-app",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/src/**/*.ts",
+              "libs/shared/ui/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui"],
+          "options": {
+            "jestConfig": "libs/shared/ui/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "leaderboard-data-access": {
+      "projectType": "library",
+      "root": "libs/leaderboard/data-access",
+      "sourceRoot": "libs/leaderboard/data-access/src",
+      "prefix": "leaderboard-app",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/leaderboard/data-access/src/**/*.ts",
+              "libs/leaderboard/data-access/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/leaderboard/data-access"],
+          "options": {
+            "jestConfig": "libs/leaderboard/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "leaderboard-feature-shell": {
+      "projectType": "library",
+      "root": "libs/leaderboard/feature-shell",
+      "sourceRoot": "libs/leaderboard/feature-shell/src",
+      "prefix": "leaderboard-app",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/leaderboard/feature-shell/src/**/*.ts",
+              "libs/leaderboard/feature-shell/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/leaderboard/feature-shell"],
+          "options": {
+            "jestConfig": "libs/leaderboard/feature-shell/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "landing-feature-home": {
+      "projectType": "library",
+      "root": "libs/landing/feature-home",
+      "sourceRoot": "libs/landing/feature-home/src",
+      "prefix": "leaderboard-app",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/landing/feature-home/src/**/*.ts",
+              "libs/landing/feature-home/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/landing/feature-home"],
+          "options": {
+            "jestConfig": "libs/landing/feature-home/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "shared-environments": {
+      "root": "libs/shared/environments",
+      "sourceRoot": "libs/shared/environments/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/shared/environments/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/environments"],
+          "options": {
+            "jestConfig": "libs/shared/environments/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  }
+}

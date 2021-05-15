@@ -1,0 +1,33 @@
+{
+  "npmScope": "leaderboard-app",
+  "affected": { "defaultBase": "master" },
+  "implicitDependencies": {
+    "angular.json": "*",
+    "package.json": { "dependencies": "*", "devDependencies": "*" },
+    "tsconfig.base.json": "*",
+    "tslint.json": "*",
+    ".eslintrc.json": "*",
+    "nx.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": { "cacheableOperations": ["build", "lint", "test", "e2e"] }
+    }
+  },
+  "projects": {
+    "leaderboard-frontend": { "tags": [] },
+    "leaderboard-frontend-e2e": {
+      "tags": [],
+      "implicitDependencies": ["leaderboard-frontend"]
+    },
+    "leaderboard-api": { "tags": [] },
+    "shared-data-access": { "tags": [] },
+    "shared-models": { "tags": [] },
+    "shared-ui": { "tags": [] },
+    "leaderboard-data-access": { "tags": [] },
+    "leaderboard-feature-shell": { "tags": [] },
+    "landing-feature-home": { "tags": [] },
+    "shared-environments": { "tags": [] }
+  }
+}

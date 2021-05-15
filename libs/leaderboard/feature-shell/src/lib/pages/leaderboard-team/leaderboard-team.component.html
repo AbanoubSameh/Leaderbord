@@ -1,0 +1,38 @@
+<div class="w-50">
+  <div class="d-flex w-100 justify-content-between py-4 align-items-center">
+    <a routerLink="/leaderboard">
+      <fa-icon size="2x" [icon]="faArrowLeft"></fa-icon>
+    </a>
+    <button type="button" (click)="createUser()" class="btn btn-success">
+      <fa-icon [icon]="faPlus"></fa-icon> Add User
+    </button>
+  </div>
+  <ng-container *ngIf="counters$ | async as counters">
+    <table class="table" *ngIf="teamUsers$ | async as teamUsers">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Counter</th>
+          <th scope="col">Increment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of teamUsers">
+          <td>{{ user.name }}</td>
+          <ng-container *ngIf="getUserCounter(counters, user.id) as counter">
+            <td>{{ counter.value }}</td>
+            <td>
+              <button
+                (click)="incrementCounter(counter.id)"
+                type="button"
+                class="btn btn-outline-success"
+              >
+                <fa-icon [icon]="faPlus"></fa-icon>
+              </button>
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>

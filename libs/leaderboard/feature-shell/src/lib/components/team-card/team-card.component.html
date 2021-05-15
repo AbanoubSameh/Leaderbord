@@ -1,0 +1,21 @@
+<div *ngIf="team" class="card" style="width: 25rem">
+  <div class="card-body d-flex flex-column">
+    <h5 clh5ss="card-title">
+      <a [routerLink]="['/leaderboard', 'teams', team.id]">{{ team.name }}</a>
+    </h5>
+    <div class="d-flex justify-content-between">
+      <span>
+        Users:
+        <span class="badge badge-pill badge-info">
+          {{ (teamUsers$ | async).length }}
+        </span>
+      </span>
+      <span>
+        Counter:
+        <span class="badge badge-pill badge-info">{{
+          (teamTotalCounter$ | async) || 0
+        }}</span>
+      </span>
+    </div>
+  </div>
+</div>

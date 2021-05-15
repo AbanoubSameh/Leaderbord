@@ -1,0 +1,29 @@
+<div class="w-100 p-2 px-4 d-flex justify-content-between">
+  <h4>Teams</h4>
+  <button
+    id="create-team-button"
+    type="button"
+    (click)="createTeam()"
+    class="btn btn-success"
+  >
+    <fa-icon [icon]="faPlus"></fa-icon> Add Team
+  </button>
+</div>
+<ng-container *ngIf="teams$ | async as teams">
+  <ng-container *ngIf="teams && teams.length > 0; else NoTeamsConfigured">
+    <div class="d-flex flex-row flex-wrap overflow-auto">
+      <leaderboard-app-team-card
+        class="m-4"
+        *ngFor="let team of teams"
+        [team]="team"
+      ></leaderboard-app-team-card>
+    </div>
+  </ng-container>
+  <ng-template #NoTeamsConfigured>
+    <div class="p-4 w-100">
+      <span class="w-50 alert alert-warning d-flex mx-auto"
+        >No Items Configured</span
+      >
+    </div>
+  </ng-template>
+</ng-container>
