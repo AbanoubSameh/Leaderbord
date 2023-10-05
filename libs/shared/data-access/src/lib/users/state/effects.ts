@@ -1,27 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import * as userActions from './actions';
 import { Observable, of } from 'rxjs';
-import {
-  switchMap,
-  map,
-  catchError,
-  tap,
-} from 'rxjs/operators';
+import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { UsersService } from '../services/users.service';
 
 @Injectable()
 export class UserEffects {
-  constructor(
-    private actions$: Actions,
-    private usersService: UsersService
-  ) {}
+  constructor(private actions$: Actions, private usersService: UsersService) {}
 
   @Effect()
   loadEffect$: Observable<Action> = this.actions$.pipe(
     ofType<userActions.LoadAction>(userActions.ActionTypes.LOAD),
-    switchMap((action) => {
+    switchMap(() => {
       return this.usersService.getAll().pipe(
         map((items) => new userActions.LoadSuccessAction({ items })),
         catchError((error) =>
@@ -96,8 +88,7 @@ export class UserEffects {
     switchMap((action) =>
       this.usersService.delete(action.payload.id).pipe(
         map(
-          (item) =>
-            new userActions.DeleteSuccessAction({ id: action.payload.id })
+          () => new userActions.DeleteSuccessAction({ id: action.payload.id })
         ),
         catchError((error) =>
           of(

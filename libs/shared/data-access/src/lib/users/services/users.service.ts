@@ -8,7 +8,7 @@ import { environment } from '@environments';
   providedIn: 'root',
 })
 export class UsersService {
-  private baseUrl: string = 'users';
+  private baseUrl = 'users';
   constructor(private http: HttpClient) {}
 
   getAll(teamId?: UUID): Observable<UserDTO[]> {

@@ -22,7 +22,6 @@ export enum ActionTypes {
 
 export class LoadAction implements Action {
   readonly type = ActionTypes.LOAD;
-  constructor() {}
 }
 
 export class LoadSuccessAction implements Action {
